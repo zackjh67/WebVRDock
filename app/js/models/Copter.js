@@ -1,6 +1,8 @@
 import {CylinderGeometry, Group, Math, Matrix4, Mesh, MeshPhongMaterial, SphereGeometry} from "three";
 import Blades from './blades';
 import * as THREE from "three";
+import copter2 from '../textures/copter2.jpg';
+import tail from '../textures/tail.jpg';
 
 class Copter extends Group {
 
@@ -10,8 +12,8 @@ class Copter extends Group {
         this.swayLeft = false;
         //Body Color
         const bodyColorMaterial = new MeshPhongMaterial ({color: 0x808080});
-        var texture = new THREE.TextureLoader().load('app/js/textures/copter2.jpg');
-        var texture2 = new THREE.TextureLoader().load('app/js/textures/tail.jpg');
+        var texture = new THREE.TextureLoader().load(copter2);
+        var texture2 = new THREE.TextureLoader().load(tail);
         var material = new THREE.MeshPhongMaterial({map:texture});
         //Create Blades
         this.blades = new Blades(150, 5);

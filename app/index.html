@@ -2,7 +2,7 @@
 
 <head>
   <title>
-      Zachary Hern | Phillip Garza
+      Phillip Garza
     <%= htmlWebpackPlugin.options.title %>
   </title>
 </head>
@@ -43,83 +43,118 @@
     left arrow to turn left, right arrow to turn right, up arrow to pitch up, and down arrow to pitch down<br>
     Click the starship enterprise or the helicopter to move them around instead of the camera. <br>
     To stop return back to moving the camera around, click anywhere else.
-
     <table>
         <tr>
-            <td>
+            <td><div>
+                <input type="checkbox" id="bladeToggle" onchange="toggle(this.id)" checked>
+                <label for="bladeToggle">Toggle Blade Animation</label>
                 <br>Blade Speed: <span id="bladeSpeed" style="color:red;font-weight:bold;">20</span><br>
                 0 <input class = "bladeSpeed" type="range" min="0" max="100" step="1" value="20" onchange="changeValue(this.value, this.className)"> 100
+            </div>
             </td>
             <td>
+                <div>
+                    <input type="checkbox" id="swayToggle" onchange="toggle(this.id)" checked>
+                    <label for="swayToggle">Toggle Sway Animation</label>
                 <br>Sway Distance: <span id="swayDist" style="color:red;font-weight:bold;">1.5</span><br>
                 0 <input class = "swayDist" type="range" min="0" max="3" step="0.1" value="1.5" onchange="changeValue(this.value, this.className)"> 3
+                </div>
             </td>
             <td>
-                <button id = "ambientOff" onclick="toggleLight(this.id)">Ambient Light Off</button><button id = "ambientOn" onclick="toggleLight(this.id)">Ambient Light On</button>
-            </td>
-            <td>
+                <div>
+                <input type="checkbox" id="ambientToggle" onchange="toggle(this.id)" checked>
+                <label for="ambientToggle">Toggle Ambient Light</label>
                 <br>Ambient Light Intensity: <span id="ambientLightIntensity" style="color:red;font-weight:bold;">1.5</span><br>
                 0 <input class = "ambientLightIntensity" type="range" min="0" max="3" step="0.1" value = "1.5" onchange="changeValue(this.value, this.className)"> 3
+                </div>
             </td>
         </tr>
         <tr>
             <td>
-                <br><button id = "lightOneOff" onclick="toggleLight(this.id)">Light One Off</button><button id = "lightOneOn" onclick="toggleLight(this.id)">Light One On</button>
+                <div>
+                <input type="checkbox" id="lightOneToggle" onchange="toggle(this.id)" checked>
+                <label for="lightOneToggle">Toggle Light One</label>
+                <!--<br><button id = "lightOneOff" onclick="toggleLight(this.id)">Light One Off</button><button id = "lightOneOn" onclick="toggleLight(this.id)">Light One On</button>-->
+                </div>
             </td>
             <td>
                 <br>Light One Intensity: <span id="lightOneIntensity" style="color:red;font-weight:bold;">1.5</span><br>
                 0 <input id="lightOneSlider" class = "lightOneIntensity" type="range" min="0" max="3" step="0.1" value = "1.5" onchange="changeValue(this.value, this.className)"> 3
             </td>
             <td>
-                <br>Light One X: <span id="lightOneX" style="color:red;font-weight:bold;">20</span><br>
-                -100 <input class = "lightOneX" type="range" min="-100" max="100" step="1" value="50" onchange="changeValue(this.value, this.className)"> 100
+                <br>Light One X: <span id="lightOneX" style="color:red;font-weight:bold;">0</span><br>
+                -500 <input class = "lightOneX" type="range" min="-500" max="500" step="1" value="0" onchange="changeValue(this.value, this.className)"> 500
             </td>
             <td>
-                <br>Light One Y: <span id="lightOneY" style="color:red;font-weight:bold;">20</span><br>
-                -100 <input class = "lightOneY" type="range" min="-100" max="100" step="1" value="50" onchange="changeValue(this.value, this.className)"> 100
+                <div>
+                <br>Light One Y: <span id="lightOneY" style="color:red;font-weight:bold;">0</span><br>
+                -500 <input class = "lightOneY" type="range" min="-500" max="500" step="1" value="0" onchange="changeValue(this.value, this.className)"> 500
+                </div>
             </td>
             <td>
-                <br>Light One Z: <span id="lightOneZ" style="color:red;font-weight:bold;">20</span><br>
-                -100 <input class = "lightOneZ" type="range" min="-100" max="100" step="1" value="50" onchange="changeValue(this.value, this.className)"> 100
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <br><button id = "spotlightOff" onclick="toggleLight(this.id)">Spotlight Off</button><button id = "spotlightOn" onclick="toggleLight(this.id)">Spotlight On</button>
-            </td>
-            <td>
-                <br>SpotLight X: <span id="spotLightX" style="color:red;font-weight:bold;">20</span><br>
-                -100 <input class = "spotLightX" type="range" min="-100" max="100" step="1" value="50" onchange="changeValue(this.value, this.className)"> 100
-            </td>
-            <td>
-                <br>SpotLight Y: <span id="spotLightY" style="color:red;font-weight:bold;">20</span><br>
-                -100 <input class = "spotLightY" type="range" min="-100" max="100" step="1" value="50" onchange="changeValue(this.value, this.className)"> 100
-            </td>
-            <td>
-                <br>SpotLight Z: <span id="spotLightZ" style="color:red;font-weight:bold;">20</span><br>
-                -100 <input class = "spotLightZ" type="range" min="-100" max="100" step="1" value="50" onchange="changeValue(this.value, this.className)"> 100
+                <div>
+                <br>Light One Z: <span id="lightOneZ" style="color:red;font-weight:bold;">0</span><br>
+                -500 <input class = "lightOneZ" type="range" min="-500" max="500" step="1" value="0" onchange="changeValue(this.value, this.className)"> 500
+                </div>
             </td>
         </tr>
         <tr>
             <td>
+                <div>
+                    <input type="checkbox" id="spotLightToggle" onchange="toggle(this.id)" checked>
+                    <label for="spotLightToggle">Toggle Spot Light</label>
+                <!--<br><button id = "spotlightOff" onclick="toggleLight(this.id)">Spotlight Off</button><button id = "spotlightOn" onclick="toggleLight(this.id)">Spotlight On</button>-->
+                </div>
+            </td>
+            <td>
+                <div>
+                <br>SpotLight X: <span id="spotLightX" style="color:red;font-weight:bold;">0</span><br>
+                -500 <input class = "spotLightX" type="range" min="-500" max="500" step="1" value="0" onchange="changeValue(this.value, this.className)"> 500
+                </div>
+            </td>
+            <td>
+                <div>
+                <br>SpotLight Y: <span id="spotLightY" style="color:red;font-weight:bold;">0</span><br>
+                -500 <input class = "spotLightY" type="range" min="-500" max="500" step="1" value="0" onchange="changeValue(this.value, this.className)"> 500
+                </div>
+            </td>
+            <td>
+                <div>
+                <br>SpotLight Z: <span id="spotLightZ" style="color:red;font-weight:bold;">0</span><br>
+                -500 <input class = "spotLightZ" type="range" min="-500" max="500" step="1" value="0" onchange="changeValue(this.value, this.className)"> 500
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div>
                 <br>SpotLight Intensity: <span id="spotLightIntensity" style="color:red;font-weight:bold;">1.5</span><br>
                 0 <input class = "spotLightIntensity" type="range" min="0" max="3" step="0.1" value="1.5" onchange="changeValue(this.value, this.className)"> 3
+                </div>
             </td>
             <td>
+                <div>
                 <br>SpotLight Penumbra: <span id="spotLightPenumbra" style="color:red;font-weight:bold;">0.4</span><br>
                 0 <input class = "spotLightPenumbra" type="range" min="0" max="1" step="0.1" value="0.4" onchange="changeValue(this.value, this.className)"> 1
+                </div>
             </td>
             <td>
+                <div>
                 <br>SpotLight Decay: <span id="spotLightDecay" style="color:red;font-weight:bold;">20</span><br>
                 0 <input class = "spotLightDecay" type="range" min="0" max="3" step="0.1" value="0" onchange="changeValue(this.value, this.className)"> 3
+                </div>
             </td>
             <td>
+                <div>
                 <br>SpotLight Distance: <span id="spotLightDistance" style="color:red;font-weight:bold;">0</span><br>
                 0 <input class = "spotLightDistance" type="range" min="0" max="500" step="1" value="0" onchange="changeValue(this.value, this.className)"> 500
+                </div>
             </td>
             <td>
+                <div>
                 <br>SpotLight Angle: PI/<span id="spotLightAngle" style="color:red;font-weight:bold;">2</span><br>
                 PI/2 <input class = "spotLightAngle" type="range" min="2" max="10" step="1" value="2" onchange="changeValue(this.value, this.className)"> PI/10
+                </div>
             </td>
         </tr>
 
@@ -139,8 +174,12 @@
             dispatchEvent(valChangeEvent);
         }
 
-        function toggleLight(id){
-            var toggleEvent = new CustomEvent('light_toggled', { detail: {id: id} });
+        function toggle(id){
+            var val;
+            if(document.getElementById(id).checked)
+                val = 1;
+            else val = 0;
+            var toggleEvent = new CustomEvent('checkbox_toggled', { detail: {id: id, val: val} });
             dispatchEvent(toggleEvent);
         }
     </script>

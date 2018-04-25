@@ -15,6 +15,14 @@ import {SphereGeometry} from "three";
 import {MeshStandardMaterial} from "three";
 import {Mesh} from "three";
 import {MeshPhongMaterial} from "three";
+
+/*************************************************
+ * Texture and lighting with ThreeJS- Project 2
+ * @author Zachary Hern
+ * @author Phil Garza
+ * @date 4/17/18
+ **************************************************/
+
 var selected;
 var rotationSpeed = 20;
 var swayDistance = 1;
@@ -67,7 +75,7 @@ export default class App {
       //renderer.setPixelRatio( window.devicePixelRatio );
     this.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera(75, 4/3, 1, 500);
+    this.camera = new THREE.PerspectiveCamera(75, 4/3, 1, 1000);
 
     //this.camera.aspect = 4/3;
     this.camera.position.z = 100;
@@ -75,40 +83,27 @@ export default class App {
       this.raycaster = new THREE.Raycaster();
       this.mouse = new THREE.Vector2();
 
-      // window.addEventListener( 'mousedown', this.onDocumentMouseDown.bind(this), false );
-      // window.addEventListener( 'touchstart', this.onDocumentTouchStart.bind(this), false );
-
-      this.lightOne = new THREE.DirectionalLight (0xFFFFFF, lightOneIntensity);
+      this.lightOne = new THREE.DirectionalLight (0xFFFFFF, lightOneIntensity, 100);
       this.lightOne.position.set (20, 20, 20);
-      //this.lightOne.shadow = new THREE.LightShadow( new THREE.PerspectiveCamera( 50, 1, 1200, 2500 ) );
       this.lightOne.castShadow = true;
-      this.lightOne.shadow.mapSize.width = 512;  // default
-      this.lightOne.shadow.mapSize.height = 512; // default
-      this.lightOne.shadow.camera.near = 0.5;       // default
-      this.lightOne.shadow.camera.far = 500;
-      // var targetObject = new THREE.Object3D();
-      // this.scene.add(targetObject);
-      //
-      // this.lightOne.target = targetObject;
-      //this.scene.add( this.lightOne.target );
-      //this.lightOne.castShadow = true;
+
       this.scene.add (this.lightOne);
 
-      this.ambient = new THREE.AmbientLight(0xff52ef, 0.1);
+      this.ambient = new THREE.AmbientLight(0xff52ef, ambientIntensity);
       this.scene.add(this.ambient);
       //this.ambient.castShadow = true;
-      this.spotLight = new THREE.SpotLight(0xfFFFFF, 1);
+      this.spotLight = new THREE.SpotLight(0xfFFFFF, spotLightIntensity);
       //var spotLightHelper = new THREE.SpotLightHelper( this.spotLight );
-      this.spotLight.shadow.mapSize.width = 512;  // default
-      this.spotLight.shadow.mapSize.height = 512; // default
+      this.spotLight.shadow.mapSize.width = 1000;  // default
+      this.spotLight.shadow.mapSize.height = 1000; // default
       this.spotLight.shadow.camera.near = 0.5;       // default
-      this.spotLight.shadow.camera.far = 500;
+      this.spotLight.shadow.camera.far = 1000;
 
-      this.spotLight.position.set(-40,80,40);
+      this.spotLight.position.set(-20,200,40);
       this.spotLight.angle = spotLightAngle;
-      this.spotLight.penumbra = 0.4;
-      this.spotLight.decay = 0;
-      this.spotLight.distance = 100;
+      this.spotLight.penumbra = spotLightPenumbra;
+      this.spotLight.decay = spotLightDecay;
+      this.spotLight.distance = 1000;
       this.spotLight.castShadow = true;
 
       //this.spotLight.target.position.set(0,0,0);
@@ -148,7 +143,7 @@ export default class App {
      // this.spotLight.target = this.copter;
     //this.myTie = new tie();
     this.myEnterpise = new ThreeJSEnterprise();
-    // this.myEnterpise.castShadow = true;
+     this.myEnterpise.castShadow = true;
       this.myEnterpise.traverse( function( child )
       {
           if( child instanceof THREE.Mesh)
@@ -492,36 +487,7 @@ this.strafeRight(selected);
                  selected = this.camera;
                  i = intersects.length
              }
-
-         //     var objectGroup = intersects[i].parent;
-         //
-         //     for(var j = 0; j < objectGroup.children.length; j++){
-         //         objectGroup.children[j].material.color.setHex(0x1A75FF);
-         //
              }
-
-        //
-        //     console.log(intersects[i]);
-        //     //intersects[ i ].object.material.color.set( 0xff0000 );
-        //     // selected = intersects[0].object.parent;
-        //
-         //1}
-        // var vectorMouse = new THREE.Vector3( //vector from camera to mouse
-        //         //     -(window.innerWidth/2-e.clientX)*2/window.innerWidth,
-        //         //     (window.innerHeight/2-e.clientY)*2/window.innerHeight,
-        //         //     -1/Math.tan(22.5*Math.PI/180)); //22.5 is half of camera frustum angle 45 degree
-        //         // vectorMouse.applyQuaternion(this.camera.quaternion);
-        //         // vectorMouse.normalize();
-        //         //
-        //         // var vectorObject = new THREE.Vector3(); //vector from camera to object
-        //         // vectorObject.set(this.copter.x - this.camera.position.x,
-        //         //     this.copter.y - this.camera.position.y,
-        //         //     this.copter.z - this.camera.position.z);
-        //         // vectorObject.normalize();
-        //         // if (vectorMouse.angleTo(vectorObject)*180/Math.PI < 1) {
-        //         //     //mouse's position is near object's position
-        //         //
-        //         // }
     }
 
     onMouseMove( event ) {
@@ -540,11 +506,11 @@ this.strafeRight(selected);
     }
 
     adjustBladeSpeed(i){
-      bladeRotation = i;
+      bladeRotation = rotationSpeed = i;
     }
 
     adjustSway(i){
-      copterSway = i;
+      copterSway = swayDistance = i;
     }
 
     adjustAmbientIntensity(i){
@@ -635,23 +601,40 @@ this.strafeRight(selected);
 
     toggle(i){
       switch(i.detail.id){
-          case "ambientOff":
-              this.ambient.intensity = 0;
+          case "bladeToggle":
+              if(i.detail.val == 0)
+                bladeRotation = 0;
+              else bladeRotation = rotationSpeed;
               break;
-          case "ambientOn":
-              this.ambient.intensity = ambientIntensity;
+          case "swayToggle":
+              if(i.detail.val == 0)
+                  copterSway = 0;
+              else copterSway = swayDistance;
               break;
-          case "lightOneOff":
-              this.lightOne.intensity = 0;
+          case "ambientToggle":
+              if(i.detail.val == 0)
+                this.ambient.intensity = 0;
+              else this.ambient.intensity = ambientIntensity;
               break;
-          case "lightOneOn":
-              this.lightOne.intensity = lightOneIntensity;
+          case "lightOneToggle":
+              if(i.detail.val == 0) {
+                  this.lightOne.intensity = 0;
+                  this.lightOne.castShadow = false;
+              }
+              else {
+                  this.lightOne.intensity = lightOneIntensity;
+                  this.lightOne.castShadow = true;
+              }
               break;
-          case "spotlightOff":
-              this.spotLight.intensity = 0;
-              break;
-          case "spotlightOn":
-              this.spotLight.intensity = spotLightIntensity;
+          case "spotLightToggle":
+              if(i.detail.val == 0) {
+                  this.spotLight.intensity = 0;
+                  this.spotLight.castShadow = false;
+              }
+              else {
+                  this.spotLight.intensity = spotLightIntensity;
+                  this.spotLight.castShadow = true;
+              }
               break;
       }
     }
@@ -660,8 +643,12 @@ this.strafeRight(selected);
         window.addEventListener('keydown', this.onKeypress.bind(this), false);
         window.addEventListener('mousemove', this.onMouseMove.bind(this), false);
         window.addEventListener( 'mousedown', this.onDocumentMouseDown.bind(this), false);
-        window.addEventListener('light_toggled', this.toggle.bind(this), false);
+        window.addEventListener('checkbox_toggled', this.toggle.bind(this), false);
         window.addEventListener('values_changed', this.sliderChanged.bind(this), false);
+
+    }
+
+    setupSliders(){
 
     }
 
