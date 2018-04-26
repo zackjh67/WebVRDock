@@ -1,0 +1,37 @@
+# Blender MTL File: 'Dragon-low-rig.blend'
+# Material Count: 3
+
+newmtl dents
+Ns 37.254902
+Ka 1.000000 1.000000 1.000000
+Kd 0.600000 0.600000 0.600000
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd color-map-dents.png
+map_Bump -bm 5.000000 normal-map-dents.png
+
+newmtl dragon
+Ns 37.254902
+Ka 1.000000 1.000000 1.000000
+Kd 0.308198 0.038970 0.015397
+Ks 0.071766 0.044765 0.015971
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd color_map1.png
+map_Bump -bm 5.000000 normal_map.png
+
+newmtl oeil
+Ns 963.438741
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.516667 0.516667 0.516667
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd color-map-eye.png

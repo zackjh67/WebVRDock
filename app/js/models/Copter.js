@@ -10,6 +10,7 @@ class Copter extends Group {
         super();
         this.myPosition = 0;
         this.swayLeft = false;
+        this.matrix.matrixAutoUpdate = false;
         //Body Color
         const bodyColorMaterial = new MeshPhongMaterial ({color: 0x808080});
         var texture = new THREE.TextureLoader().load(copter2);
@@ -75,6 +76,8 @@ class Copter extends Group {
         this.bladesBack.matrix.multiply(trans);
         trans = new THREE.Matrix4().makeTranslation(0,0,-10);
         this.bladesBack.matrix.multiply(trans);
+        transUp = new THREE.Matrix4().makeTranslation(0, 100, 0);
+        this.body.matrix.multiply(transUp);
         this.scale.set(.3,.3,.3);
     }
 
