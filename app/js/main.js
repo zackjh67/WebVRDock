@@ -1,20 +1,11 @@
 import * as THREE from 'three';
 import Copter from './models/Copter'
-import tie from './models/tie';
 import ThreeJSEnterprise from './models/ThreeJSEnterprise'
+import MTLLoader from 'three-mtl-loader';
+import OBJLoader from 'three-obj-loader';
 import mario from "./textures/mario.jpg";
-import UniCycle from './models/UniCycle'
-// import orbit from 'three-orbit-controls';
-// const OrbitControls = orbit(THREE);
-import TrackballControls from 'three-trackballcontrols';
-import {ShaderLib as myTie} from "three";
-import Wall from "./models/wall";
 import Room from "./models/Room";
-//import {Math} from 'three';
-import {SphereGeometry} from "three";
-import {MeshStandardMaterial} from "three";
-import {Mesh} from "three";
-import {MeshPhongMaterial} from "three";
+import Crate from "./models/Crate";
 
 import VRControls from 'three-vrcontrols-module';
 import WebVRPolyfill from 'webvr-polyfill';
@@ -62,6 +53,7 @@ const pitchCamDown = new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(-10))
 
 export default class App {
   constructor() {
+
     const c = document.getElementById('mycanvas');
       // window.addEventListener('keydown', this.onKeypress.bind(this), false);
       // window.addEventListener('mousemove', this.onMouseMove.bind(this), false);
@@ -150,7 +142,7 @@ export default class App {
       //this.spotLight.target.position.set(0,0,0);
       //this.scene.add(this.spotLight.target);
 
-        this.scene.add(this.spotLight);
+
 
     var texture = new THREE.TextureLoader().load(mario);
     this.wall = new Room();
@@ -176,15 +168,9 @@ export default class App {
       } );
 
 
-      //vive
-      this.controller1 = new navigator.ViveController(0);
-      this.controller1.standingMatrix = this.renderer.vr.getStandingMatrix();
-      this.scene.add( this.controller1 );
-
-
     // this.copter.castShadow = true;
     this.scene.add(this.copter);
-    //this.scene.add(this.copter);
+
     this.copter.body.matrix.multiply(new THREE.Matrix4().makeTranslation(300,0,0));
 
      // this.spotLight.target = this.copter;
@@ -201,19 +187,23 @@ export default class App {
           }
       } );
 
-    this.scene.add(this.myEnterpise);
+    //this.scene.add(this.myEnterpise);
+
 
     //vr controller
 
 
       //this.camera.matrixAutoUpdate = false;
+
+      this.crate = new Crate();
+      this.scene.add(this.crate);
       //move camera only by default
       selected = this.camera;
 
     this.setupListeners();
     window.addEventListener('resize', () => this.resizeHandler());
     this.resizeHandler();
-   // requestAnimationFrame(() => this.render());
+    requestAnimationFrame(() => this.render());
   }
 
   render() {
@@ -228,6 +218,20 @@ export default class App {
     //requestAnimationFrame(() => this.render());
     //this.spotLight.position.set(this.copter.myPosition);
   }
+
+  loadAsset(name) {
+        return new Promise((resolve, reject) => {
+            const mtlLoader = new MTLLoader()
+            mtlLoader.setPath('./models/');
+            mtlLoader.load(`${name}.mtl`, (materials) => {
+                materials.preload();
+                const objLoader = new OBJLoader();
+                objLoader.setMaterials(materials);
+                objLoader.setPath('./models/');
+                objLoader.load(`${name}.obj`, object => resolve(object), undefined, xhr => reject(xhr));
+            }, undefined, xhr => reject(xhr));
+        });
+    }
 
   resizeHandler() {
     canvas = document.getElementById("mycanvas");
@@ -706,17 +710,6 @@ this.strafeRight(selected);
 
     setupSliders() {
 
-    }
-
-
-    //  This shortcut will be useful for later on down the road...
-    applyDown( obj, key, value ){
-        obj[ key ] = value
-        if( obj.children !== undefined && obj.children.length > 0 ){
-            obj.children.forEach( function( child ){
-                this.applyDown( child, key, value )
-            })
-        }
     }
 
 
