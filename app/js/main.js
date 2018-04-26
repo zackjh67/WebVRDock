@@ -16,6 +16,9 @@ import {MeshStandardMaterial} from "three";
 import {Mesh} from "three";
 import {MeshPhongMaterial} from "three";
 
+import VRControls from 'three-vrcontrols-module';
+import WebVRPolyfill from 'webvr-polyfill';
+
 /*************************************************
  * Texture and lighting with ThreeJS- Project 2
  * @author Zachary Hern
@@ -68,6 +71,10 @@ export default class App {
     this.renderer.shadowMap.enabled = true;
 
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+      //enable vr
+      this.renderer.vr.enabled = true;
+      //this.renderer.vr.standing = true;
     //   this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
      // this.renderer.setPixelRatio( window.devicePixelRatio );
@@ -80,8 +87,42 @@ export default class App {
     //this.camera.aspect = 4/3;
     this.camera.position.z = 100;
 
+    //move camera up to average height
+      this.camera.position.y = 5.6;
+
+      //vr display
+      this.display = null;
+      //cam control value
+      this.camControl = null;
+
+      //ray caster for laser pointer
       this.raycaster = new THREE.Raycaster();
       this.mouse = new THREE.Vector2();
+
+      //polyfill for browser support
+      const polyfill = new WebVRPolyfill();
+      //check for vr support
+
+      navigator.getVRDisplays().then(displays => {
+          if (displays.length > 0) {
+              // WebVR is supported
+              this.display = displays[0];
+              this.camControl = new VRControls(this.camera);
+          } else {
+              // WebVR is NOT supported, fallback to trackball control
+              this.display = window;
+              window.alert("Temporary: Sorry webvr not supported");
+              //camControl = new TrackballControls(camera);
+          }
+          //this.display.requestAnimationFrame(this.render());
+          this.display.requestAnimationFrame(() => this.render());
+      });
+
+      // function render() {
+      //     this.renderer.render(this.scene, this.camera);
+      //     this.camControl.update();
+      //     display.requestAnimationFrame(render);
+      // }
 
       this.lightOne = new THREE.DirectionalLight (0xFFFFFF, lightOneIntensity, 100);
       this.lightOne.position.set (20, 20, 20);
@@ -135,6 +176,12 @@ export default class App {
       } );
 
 
+      //vive
+      this.controller1 = new navigator.ViveController(0);
+      this.controller1.standingMatrix = this.renderer.vr.getStandingMatrix();
+      this.scene.add( this.controller1 );
+
+
     // this.copter.castShadow = true;
     this.scene.add(this.copter);
     //this.scene.add(this.copter);
@@ -156,24 +203,30 @@ export default class App {
 
     this.scene.add(this.myEnterpise);
 
-      this.camera.matrixAutoUpdate = false;
+    //vr controller
+
+
+      //this.camera.matrixAutoUpdate = false;
       //move camera only by default
       selected = this.camera;
 
     this.setupListeners();
     window.addEventListener('resize', () => this.resizeHandler());
     this.resizeHandler();
-    requestAnimationFrame(() => this.render());
+   // requestAnimationFrame(() => this.render());
   }
 
   render() {
       this.raycaster.setFromCamera( this.mouse, this.camera );
     this.renderer.render(this.scene, this.camera);
       this.copter.animate(bladeRotation, copterSway);
-    requestAnimationFrame(() => this.render());
+
+      this.camControl.update();
+      //orig: this.display.requestAnimationFrame(this.render());
+      this.display.requestAnimationFrame(() => this.render());
+
+    //requestAnimationFrame(() => this.render());
     //this.spotLight.position.set(this.copter.myPosition);
-
-
   }
 
   resizeHandler() {
@@ -194,7 +247,8 @@ export default class App {
     onKeypress(event) {
         const key = event.keyCode || event.charCode;
 
-        switch (key) {
+        //switch (key) {
+        switch (0) { // for testing
             case 65:
                 // 'a'
                 this.strafeLeft(selected);
@@ -475,12 +529,14 @@ this.strafeRight(selected);
              if(intersects[i].object.parent === this.copter || intersects[i].object.parent.parent === this.copter){
                  selected = this.copter;
                  this.spotLight.target = this.copter.body;
-                 i = intersects.length
+                 i = intersects.length;
+                 console.log(intersects[i]);
              }else if(intersects[i].object.parent.parent != null && intersects[i].object.parent.parent.parent != null){
                  if(intersects[i].object.parent.parent === this.myEnterpise || intersects[i].object.parent.parent.parent === this.myEnterpise) {
                      selected = this.myEnterpise;
                      this.spotLight.target = this.myEnterpise.enterpriseGroup;
-                     i = intersects.length
+                     i = intersects.length;
+                     console.log(intersects[i]);
                  }
              }
               else {
@@ -648,8 +704,19 @@ this.strafeRight(selected);
 
     }
 
-    setupSliders(){
+    setupSliders() {
 
+    }
+
+
+    //  This shortcut will be useful for later on down the road...
+    applyDown( obj, key, value ){
+        obj[ key ] = value
+        if( obj.children !== undefined && obj.children.length > 0 ){
+            obj.children.forEach( function( child ){
+                this.applyDown( child, key, value )
+            })
+        }
     }
 
 
